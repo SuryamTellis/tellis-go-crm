@@ -12,17 +12,24 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Textarea } from '@/components/ui/textarea'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
-import { SelectDropdown } from '@/components/select-dropdown'
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Task } from '../data/schema'
 
 interface Props {
@@ -33,8 +40,9 @@ interface Props {
 
 const formSchema = z.object({
   title: z.string().min(1, 'Title is required.'),
-  status: z.string().min(1, 'Please select a status.'),
-  label: z.string().min(1, 'Please select a label.'),
+  description: z.string().optional(),
+  assignees: z.string().optional(),
+  labels: z.string().optional(),
   priority: z.string().min(1, 'Please choose a priority.'),
 })
 type TasksForm = z.infer<typeof formSchema>
@@ -46,8 +54,9 @@ export function TasksMutateDrawer({ open, onOpenChange, currentRow }: Props) {
     resolver: zodResolver(formSchema),
     defaultValues: currentRow ?? {
       title: '',
-      status: '',
-      label: '',
+      description: '',
+      assignees: '',
+      labels: '',
       priority: '',
     },
   })
@@ -60,149 +69,182 @@ export function TasksMutateDrawer({ open, onOpenChange, currentRow }: Props) {
   }
 
   return (
-    <Sheet
+    <Dialog
       open={open}
       onOpenChange={(v) => {
         onOpenChange(v)
         form.reset()
       }}
     >
-      <SheetContent className='flex flex-col'>
-        <SheetHeader className='text-left'>
-          <SheetTitle>{isUpdate ? 'Update' : 'Create'} Task</SheetTitle>
-          <SheetDescription>
-            {isUpdate
-              ? 'Update the task by providing necessary info.'
-              : 'Add a new task by providing necessary info.'}
-            Click save when you&apos;re done.
-          </SheetDescription>
-        </SheetHeader>
+      <DialogContent className='max-w-4xl'>
+        <DialogHeader className='text-left'>
+          <DialogTitle>Create a new task</DialogTitle>
+        </DialogHeader>
         <Form {...form}>
           <form
             id='tasks-form'
             onSubmit={form.handleSubmit(onSubmit)}
-            className='flex-1 space-y-5 px-4'
+            className='space-y-6'
           >
-            <FormField
-              control={form.control}
-              name='title'
-              render={({ field }) => (
-                <FormItem className='space-y-1'>
-                  <FormLabel>Title</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder='Enter a title' />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='status'
-              render={({ field }) => (
-                <FormItem className='space-y-1'>
-                  <FormLabel>Status</FormLabel>
-                  <SelectDropdown
-                    defaultValue={field.value}
-                    onValueChange={field.onChange}
-                    placeholder='Select dropdown'
-                    items={[
-                      { label: 'In Progress', value: 'in progress' },
-                      { label: 'Backlog', value: 'backlog' },
-                      { label: 'Todo', value: 'todo' },
-                      { label: 'Canceled', value: 'canceled' },
-                      { label: 'Done', value: 'done' },
-                    ]}
-                  />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='label'
-              render={({ field }) => (
-                <FormItem className='relative space-y-3'>
-                  <FormLabel>Label</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className='flex flex-col space-y-1'
-                    >
-                      <FormItem className='flex items-center space-y-0 space-x-3'>
+            <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
+              {/* Left Column - Task Details */}
+              <div className='space-y-4'>
+                <FormField
+                  control={form.control}
+                  name='title'
+                  render={({ field }) => (
+                    <FormItem className='space-y-2'>
+                      <FormLabel className='text-sm font-medium'>Add a title *</FormLabel>
+                      <FormControl>
+                        <Input {...field} placeholder='Title' />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name='description'
+                  render={({ field }) => (
+                    <FormItem className='space-y-2'>
+                      <FormLabel className='text-sm font-medium'>Add a description</FormLabel>
+                      <div className='border rounded-md'>
+                        <div className='border-b px-3 py-2'>
+                          <div className='flex space-x-4 text-sm'>
+                            <button type='button' className='font-bold'>Write</button>
+                            <button type='button' className='text-muted-foreground'>Preview</button>
+                          </div>
+                        </div>
+                        <div className='border-b px-3 py-2'>
+                          <div className='flex space-x-2 text-sm'>
+                            <button type='button' className='font-bold'>B</button>
+                            <button type='button' className='italic'>I</button>
+                            <button type='button'>🔗</button>
+                            <button type='button'>&lt;&gt;</button>
+                            <button type='button'>•</button>
+                            <button type='button'>1.</button>
+                            <button type='button'>@</button>
+                          </div>
+                        </div>
                         <FormControl>
-                          <RadioGroupItem value='documentation' />
+                          <Textarea 
+                            {...field} 
+                            placeholder='Type your description here...'
+                            className='border-0 resize-none min-h-[120px]'
+                          />
                         </FormControl>
-                        <FormLabel className='font-normal'>
-                          Documentation
-                        </FormLabel>
-                      </FormItem>
-                      <FormItem className='flex items-center space-y-0 space-x-3'>
-                        <FormControl>
-                          <RadioGroupItem value='feature' />
-                        </FormControl>
-                        <FormLabel className='font-normal'>Feature</FormLabel>
-                      </FormItem>
-                      <FormItem className='flex items-center space-y-0 space-x-3'>
-                        <FormControl>
-                          <RadioGroupItem value='bug' />
-                        </FormControl>
-                        <FormLabel className='font-normal'>Bug</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='priority'
-              render={({ field }) => (
-                <FormItem className='relative space-y-3'>
-                  <FormLabel>Priority</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className='flex flex-col space-y-1'
-                    >
-                      <FormItem className='flex items-center space-y-0 space-x-3'>
-                        <FormControl>
-                          <RadioGroupItem value='high' />
-                        </FormControl>
-                        <FormLabel className='font-normal'>High</FormLabel>
-                      </FormItem>
-                      <FormItem className='flex items-center space-y-0 space-x-3'>
-                        <FormControl>
-                          <RadioGroupItem value='medium' />
-                        </FormControl>
-                        <FormLabel className='font-normal'>Medium</FormLabel>
-                      </FormItem>
-                      <FormItem className='flex items-center space-y-0 space-x-3'>
-                        <FormControl>
-                          <RadioGroupItem value='low' />
-                        </FormControl>
-                        <FormLabel className='font-normal'>Low</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Right Column - Task Attributes */}
+              <div className='space-y-4'>
+                <FormField
+                  control={form.control}
+                  name='assignees'
+                  render={({ field }) => (
+                    <FormItem className='space-y-2'>
+                      <div className='flex items-center justify-between'>
+                        <FormLabel className='text-sm font-medium'>Assignees</FormLabel>
+                        <button type='button' className='text-muted-foreground'>⚙️</button>
+                      </div>
+                      <FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <SelectTrigger className='w-full'>
+                            <SelectValue placeholder='Jackson Lee' />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value='jackson-lee'>Jackson Lee</SelectItem>
+                            <SelectItem value='sarah-wilson'>Sarah Wilson</SelectItem>
+                            <SelectItem value='mike-chen'>Mike Chen</SelectItem>
+                            <SelectItem value='emma-davis'>Emma Davis</SelectItem>
+                            <SelectItem value='john-smith'>John Smith</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='labels'
+                  render={({ field }) => (
+                    <FormItem className='space-y-2'>
+                      <div className='flex items-center justify-between'>
+                        <FormLabel className='text-sm font-medium'>Labels</FormLabel>
+                        <button type='button' className='text-muted-foreground'>⚙️</button>
+                      </div>
+                      <FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <SelectTrigger className='w-full'>
+                            <SelectValue placeholder='None yet' />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value='documentation'>Documentation</SelectItem>
+                            <SelectItem value='feature'>Feature</SelectItem>
+                            <SelectItem value='bug'>Bug</SelectItem>
+                            <SelectItem value='enhancement'>Enhancement</SelectItem>
+                            <SelectItem value='design'>Design</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='priority'
+                  render={({ field }) => (
+                    <FormItem className='space-y-2'>
+                      <div className='flex items-center justify-between'>
+                        <FormLabel className='text-sm font-medium'>Priority</FormLabel>
+                        <button type='button' className='text-muted-foreground'>⚙️</button>
+                      </div>
+                      <FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <SelectTrigger className='w-full'>
+                            <SelectValue placeholder='Select priority' />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value='high'>High</SelectItem>
+                            <SelectItem value='medium'>Medium</SelectItem>
+                            <SelectItem value='low'>Low</SelectItem>
+                            <SelectItem value='urgent'>Urgent</SelectItem>
+                            <SelectItem value='normal'>Normal</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
           </form>
         </Form>
-        <SheetFooter className='gap-2'>
-          <SheetClose asChild>
-            <Button variant='outline'>Close</Button>
-          </SheetClose>
-          <Button form='tasks-form' type='submit'>
-            Save changes
-          </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+        <DialogFooter className='gap-2'>
+          <div className='flex items-center space-x-2'>
+            <Checkbox id='create-more' />
+            <label htmlFor='create-more' className='text-sm'>Create more</label>
+          </div>
+          <div className='flex space-x-2'>
+            <DialogClose asChild>
+              <Button variant='outline'>Cancel</Button>
+            </DialogClose>
+            <Button form='tasks-form' type='submit' className='bg-green-500 hover:bg-green-600'>
+              Create
+            </Button>
+          </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }

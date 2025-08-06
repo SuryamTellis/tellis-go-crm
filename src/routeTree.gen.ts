@@ -26,11 +26,17 @@ import { Route as ClerkAuthenticatedRouteRouteImport } from './routes/clerk/_aut
 import { Route as ClerkauthRouteRouteImport } from './routes/clerk/(auth)/route'
 import { Route as AuthenticatedSettingsRouteRouteImport } from './routes/_authenticated/settings/route'
 import { Route as AuthenticatedUsersIndexRouteImport } from './routes/_authenticated/users/index'
+import { Route as AuthenticatedUserAttendanceIndexRouteImport } from './routes/_authenticated/user-attendance/index'
 import { Route as AuthenticatedTasksIndexRouteImport } from './routes/_authenticated/tasks/index'
 import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
+import { Route as AuthenticatedRecordingsIndexRouteImport } from './routes/_authenticated/recordings/index'
+import { Route as AuthenticatedMonitoringIndexRouteImport } from './routes/_authenticated/monitoring/index'
+import { Route as AuthenticatedMeetingsIndexRouteImport } from './routes/_authenticated/meetings/index'
 import { Route as AuthenticatedHelpCenterIndexRouteImport } from './routes/_authenticated/help-center/index'
+import { Route as AuthenticatedComingSoonIndexRouteImport } from './routes/_authenticated/coming-soon/index'
 import { Route as AuthenticatedChatsIndexRouteImport } from './routes/_authenticated/chats/index'
 import { Route as AuthenticatedAppsIndexRouteImport } from './routes/_authenticated/apps/index'
+import { Route as AuthenticatedAdminAttendanceIndexRouteImport } from './routes/_authenticated/admin-attendance/index'
 import { Route as ClerkAuthenticatedUserManagementRouteImport } from './routes/clerk/_authenticated/user-management'
 import { Route as ClerkauthSignUpRouteImport } from './routes/clerk/(auth)/sign-up'
 import { Route as ClerkauthSignInRouteImport } from './routes/clerk/(auth)/sign-in'
@@ -122,6 +128,12 @@ const AuthenticatedUsersIndexRoute = AuthenticatedUsersIndexRouteImport.update({
   path: '/users/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedUserAttendanceIndexRoute =
+  AuthenticatedUserAttendanceIndexRouteImport.update({
+    id: '/user-attendance/',
+    path: '/user-attendance/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedTasksIndexRoute = AuthenticatedTasksIndexRouteImport.update({
   id: '/tasks/',
   path: '/tasks/',
@@ -133,10 +145,34 @@ const AuthenticatedSettingsIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedSettingsRouteRoute,
   } as any)
+const AuthenticatedRecordingsIndexRoute =
+  AuthenticatedRecordingsIndexRouteImport.update({
+    id: '/recordings/',
+    path: '/recordings/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedMonitoringIndexRoute =
+  AuthenticatedMonitoringIndexRouteImport.update({
+    id: '/monitoring/',
+    path: '/monitoring/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedMeetingsIndexRoute =
+  AuthenticatedMeetingsIndexRouteImport.update({
+    id: '/meetings/',
+    path: '/meetings/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedHelpCenterIndexRoute =
   AuthenticatedHelpCenterIndexRouteImport.update({
     id: '/help-center/',
     path: '/help-center/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedComingSoonIndexRoute =
+  AuthenticatedComingSoonIndexRouteImport.update({
+    id: '/coming-soon/',
+    path: '/coming-soon/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedChatsIndexRoute = AuthenticatedChatsIndexRouteImport.update({
@@ -149,6 +185,12 @@ const AuthenticatedAppsIndexRoute = AuthenticatedAppsIndexRouteImport.update({
   path: '/apps/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminAttendanceIndexRoute =
+  AuthenticatedAdminAttendanceIndexRouteImport.update({
+    id: '/admin-attendance/',
+    path: '/admin-attendance/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ClerkAuthenticatedUserManagementRoute =
   ClerkAuthenticatedUserManagementRouteImport.update({
     id: '/user-management',
@@ -212,11 +254,17 @@ export interface FileRoutesByFullPath {
   '/clerk/sign-in': typeof ClerkauthSignInRoute
   '/clerk/sign-up': typeof ClerkauthSignUpRoute
   '/clerk/user-management': typeof ClerkAuthenticatedUserManagementRoute
+  '/admin-attendance': typeof AuthenticatedAdminAttendanceIndexRoute
   '/apps': typeof AuthenticatedAppsIndexRoute
   '/chats': typeof AuthenticatedChatsIndexRoute
+  '/coming-soon': typeof AuthenticatedComingSoonIndexRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
+  '/meetings': typeof AuthenticatedMeetingsIndexRoute
+  '/monitoring': typeof AuthenticatedMonitoringIndexRoute
+  '/recordings': typeof AuthenticatedRecordingsIndexRoute
   '/settings/': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
+  '/user-attendance': typeof AuthenticatedUserAttendanceIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRoutesByTo {
@@ -239,11 +287,17 @@ export interface FileRoutesByTo {
   '/clerk/sign-in': typeof ClerkauthSignInRoute
   '/clerk/sign-up': typeof ClerkauthSignUpRoute
   '/clerk/user-management': typeof ClerkAuthenticatedUserManagementRoute
+  '/admin-attendance': typeof AuthenticatedAdminAttendanceIndexRoute
   '/apps': typeof AuthenticatedAppsIndexRoute
   '/chats': typeof AuthenticatedChatsIndexRoute
+  '/coming-soon': typeof AuthenticatedComingSoonIndexRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
+  '/meetings': typeof AuthenticatedMeetingsIndexRoute
+  '/monitoring': typeof AuthenticatedMonitoringIndexRoute
+  '/recordings': typeof AuthenticatedRecordingsIndexRoute
   '/settings': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
+  '/user-attendance': typeof AuthenticatedUserAttendanceIndexRoute
   '/users': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRoutesById {
@@ -271,11 +325,17 @@ export interface FileRoutesById {
   '/clerk/(auth)/sign-in': typeof ClerkauthSignInRoute
   '/clerk/(auth)/sign-up': typeof ClerkauthSignUpRoute
   '/clerk/_authenticated/user-management': typeof ClerkAuthenticatedUserManagementRoute
+  '/_authenticated/admin-attendance/': typeof AuthenticatedAdminAttendanceIndexRoute
   '/_authenticated/apps/': typeof AuthenticatedAppsIndexRoute
   '/_authenticated/chats/': typeof AuthenticatedChatsIndexRoute
+  '/_authenticated/coming-soon/': typeof AuthenticatedComingSoonIndexRoute
   '/_authenticated/help-center/': typeof AuthenticatedHelpCenterIndexRoute
+  '/_authenticated/meetings/': typeof AuthenticatedMeetingsIndexRoute
+  '/_authenticated/monitoring/': typeof AuthenticatedMonitoringIndexRoute
+  '/_authenticated/recordings/': typeof AuthenticatedRecordingsIndexRoute
   '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
+  '/_authenticated/user-attendance/': typeof AuthenticatedUserAttendanceIndexRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexRoute
 }
 export interface FileRouteTypes {
@@ -302,11 +362,17 @@ export interface FileRouteTypes {
     | '/clerk/sign-in'
     | '/clerk/sign-up'
     | '/clerk/user-management'
+    | '/admin-attendance'
     | '/apps'
     | '/chats'
+    | '/coming-soon'
     | '/help-center'
+    | '/meetings'
+    | '/monitoring'
+    | '/recordings'
     | '/settings/'
     | '/tasks'
+    | '/user-attendance'
     | '/users'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -329,11 +395,17 @@ export interface FileRouteTypes {
     | '/clerk/sign-in'
     | '/clerk/sign-up'
     | '/clerk/user-management'
+    | '/admin-attendance'
     | '/apps'
     | '/chats'
+    | '/coming-soon'
     | '/help-center'
+    | '/meetings'
+    | '/monitoring'
+    | '/recordings'
     | '/settings'
     | '/tasks'
+    | '/user-attendance'
     | '/users'
   id:
     | '__root__'
@@ -360,11 +432,17 @@ export interface FileRouteTypes {
     | '/clerk/(auth)/sign-in'
     | '/clerk/(auth)/sign-up'
     | '/clerk/_authenticated/user-management'
+    | '/_authenticated/admin-attendance/'
     | '/_authenticated/apps/'
     | '/_authenticated/chats/'
+    | '/_authenticated/coming-soon/'
     | '/_authenticated/help-center/'
+    | '/_authenticated/meetings/'
+    | '/_authenticated/monitoring/'
+    | '/_authenticated/recordings/'
     | '/_authenticated/settings/'
     | '/_authenticated/tasks/'
+    | '/_authenticated/user-attendance/'
     | '/_authenticated/users/'
   fileRoutesById: FileRoutesById
 }
@@ -504,6 +582,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUsersIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/user-attendance/': {
+      id: '/_authenticated/user-attendance/'
+      path: '/user-attendance'
+      fullPath: '/user-attendance'
+      preLoaderRoute: typeof AuthenticatedUserAttendanceIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/tasks/': {
       id: '/_authenticated/tasks/'
       path: '/tasks'
@@ -518,11 +603,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsIndexRouteImport
       parentRoute: typeof AuthenticatedSettingsRouteRoute
     }
+    '/_authenticated/recordings/': {
+      id: '/_authenticated/recordings/'
+      path: '/recordings'
+      fullPath: '/recordings'
+      preLoaderRoute: typeof AuthenticatedRecordingsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/monitoring/': {
+      id: '/_authenticated/monitoring/'
+      path: '/monitoring'
+      fullPath: '/monitoring'
+      preLoaderRoute: typeof AuthenticatedMonitoringIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/meetings/': {
+      id: '/_authenticated/meetings/'
+      path: '/meetings'
+      fullPath: '/meetings'
+      preLoaderRoute: typeof AuthenticatedMeetingsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/help-center/': {
       id: '/_authenticated/help-center/'
       path: '/help-center'
       fullPath: '/help-center'
       preLoaderRoute: typeof AuthenticatedHelpCenterIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/coming-soon/': {
+      id: '/_authenticated/coming-soon/'
+      path: '/coming-soon'
+      fullPath: '/coming-soon'
+      preLoaderRoute: typeof AuthenticatedComingSoonIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/chats/': {
@@ -537,6 +650,13 @@ declare module '@tanstack/react-router' {
       path: '/apps'
       fullPath: '/apps'
       preLoaderRoute: typeof AuthenticatedAppsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin-attendance/': {
+      id: '/_authenticated/admin-attendance/'
+      path: '/admin-attendance'
+      fullPath: '/admin-attendance'
+      preLoaderRoute: typeof AuthenticatedAdminAttendanceIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/clerk/_authenticated/user-management': {
@@ -617,20 +737,33 @@ const AuthenticatedSettingsRouteRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedAdminAttendanceIndexRoute: typeof AuthenticatedAdminAttendanceIndexRoute
   AuthenticatedAppsIndexRoute: typeof AuthenticatedAppsIndexRoute
   AuthenticatedChatsIndexRoute: typeof AuthenticatedChatsIndexRoute
+  AuthenticatedComingSoonIndexRoute: typeof AuthenticatedComingSoonIndexRoute
   AuthenticatedHelpCenterIndexRoute: typeof AuthenticatedHelpCenterIndexRoute
+  AuthenticatedMeetingsIndexRoute: typeof AuthenticatedMeetingsIndexRoute
+  AuthenticatedMonitoringIndexRoute: typeof AuthenticatedMonitoringIndexRoute
+  AuthenticatedRecordingsIndexRoute: typeof AuthenticatedRecordingsIndexRoute
   AuthenticatedTasksIndexRoute: typeof AuthenticatedTasksIndexRoute
+  AuthenticatedUserAttendanceIndexRoute: typeof AuthenticatedUserAttendanceIndexRoute
   AuthenticatedUsersIndexRoute: typeof AuthenticatedUsersIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedAdminAttendanceIndexRoute:
+    AuthenticatedAdminAttendanceIndexRoute,
   AuthenticatedAppsIndexRoute: AuthenticatedAppsIndexRoute,
   AuthenticatedChatsIndexRoute: AuthenticatedChatsIndexRoute,
+  AuthenticatedComingSoonIndexRoute: AuthenticatedComingSoonIndexRoute,
   AuthenticatedHelpCenterIndexRoute: AuthenticatedHelpCenterIndexRoute,
+  AuthenticatedMeetingsIndexRoute: AuthenticatedMeetingsIndexRoute,
+  AuthenticatedMonitoringIndexRoute: AuthenticatedMonitoringIndexRoute,
+  AuthenticatedRecordingsIndexRoute: AuthenticatedRecordingsIndexRoute,
   AuthenticatedTasksIndexRoute: AuthenticatedTasksIndexRoute,
+  AuthenticatedUserAttendanceIndexRoute: AuthenticatedUserAttendanceIndexRoute,
   AuthenticatedUsersIndexRoute: AuthenticatedUsersIndexRoute,
 }
 
