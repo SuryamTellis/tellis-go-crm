@@ -7,14 +7,22 @@ import {
 } from '@/components/ui/sidebar'
 import { NavGroup } from '@/components/layout/nav-group'
 import { NavUser } from '@/components/layout/nav-user'
-import { TeamSwitcher } from '@/components/layout/team-switcher'
 import { sidebarData } from './data/sidebar-data'
+import { Command } from 'lucide-react'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible='icon' variant='floating' {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={sidebarData.teams} />
+        <div className='flex items-center gap-2 px-2 py-2'>
+          <div className='bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
+            <Command className='size-4' />
+          </div>
+          <div className='grid flex-1 text-left text-sm leading-tight'>
+            <span className='truncate font-semibold'>Tellis Technology</span>
+            <span className='truncate text-xs'>Go Digital</span>
+          </div>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         {sidebarData.navGroups.map((props) => (

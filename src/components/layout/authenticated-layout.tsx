@@ -4,6 +4,10 @@ import { cn } from '@/lib/utils'
 import { SearchProvider } from '@/context/search-context'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/layout/app-sidebar'
+import { PunchInTracker } from '@/components/punch-in-tracker'
+import { Search } from '@/components/search'
+import { ThemeSwitch } from '@/components/theme-switch'
+import { ProfileDropdown } from '@/components/profile-dropdown'
 import SkipToMain from '@/components/skip-to-main'
 
 interface Props {
@@ -29,7 +33,27 @@ export function AuthenticatedLayout({ children }: Props) {
             'has-[main.fixed-main]:group-data-[scroll-locked=1]/body:h-svh'
           )}
         >
-          {children ? children : <Outlet />}
+          {/* Fixed Header with Punch-in Tracker */}
+          <header className='bg-background flex h-16 items-center gap-3 p-4 sm:gap-4 border-b'>
+            <div className='flex items-center justify-between w-full'>
+              {/* Left side - Punch-in tracker */}
+              <div className='flex-1 min-w-0 mr-6'>
+                <PunchInTracker />
+              </div>
+              
+              {/* Right side - Search, theme switch, profile */}
+              <div className='flex items-center space-x-4 flex-shrink-0'>
+                <Search />
+                <ThemeSwitch />
+                <ProfileDropdown />
+              </div>
+            </div>
+          </header>
+          
+          {/* Main Content */}
+          <div className='flex-1 overflow-auto'>
+            {children ? children : <Outlet />}
+          </div>
         </div>
       </SidebarProvider>
     </SearchProvider>
