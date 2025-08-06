@@ -3,6 +3,10 @@ import {
   IconLayoutDashboard,
   IconMessages,
   IconUsers,
+  IconMicrophone,
+  IconUsersGroup,
+  IconChartLine,
+  IconCalendarCheck,
 } from '@tabler/icons-react'
 // Future imports for when sections are uncommented:
 // import {
@@ -58,6 +62,35 @@ export const sidebarData: SidebarData = {
           title: 'Users',
           url: '/users',
           icon: IconUsers,
+        },
+        {
+          title: 'Meetings',
+          url: '/meetings',
+          icon: IconUsersGroup,
+        },
+        {
+          title: 'Recordings',
+          url: '/recordings',
+          icon: IconMicrophone,
+        },
+        {
+          title: 'Monitoring',
+          url: '/monitoring',
+          icon: IconChartLine,
+        },
+        {
+          title: 'Attendance',
+          icon: IconCalendarCheck,
+          items: [
+            {
+              title: 'Admin',
+              url: '/admin-attendance',
+            },
+            {
+              title: 'User',
+              url: '/user-attendance',
+            },
+          ],
         },
       ],
     },
