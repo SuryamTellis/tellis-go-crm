@@ -18,6 +18,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar'
 import { Badge } from '../ui/badge'
+import { cn } from '@/lib/utils'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,8 +54,8 @@ export function NavGroup({ title, items }: NavGroup) {
   )
 }
 
-const NavBadge = ({ children }: { children: ReactNode }) => (
-  <Badge className='rounded-full px-1 py-0 text-xs'>{children}</Badge>
+const NavBadge = ({ children, className }: { children: ReactNode; className?: string }) => (
+  <Badge className={cn('rounded-full px-1 py-0 text-xs', className)}>{children}</Badge>
 )
 
 const SidebarMenuLink = ({ item, href }: { item: NavLink; href: string }) => {
@@ -68,8 +69,8 @@ const SidebarMenuLink = ({ item, href }: { item: NavLink; href: string }) => {
       >
         <Link to={item.url} onClick={() => setOpenMobile(false)}>
           {item.icon && <item.icon />}
-          <span>{item.title}</span>
-          {item.badge && <NavBadge>{item.badge}</NavBadge>}
+          <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
+          {item.badge && <NavBadge className="group-data-[collapsible=icon]:hidden">{item.badge}</NavBadge>}
         </Link>
       </SidebarMenuButton>
     </SidebarMenuItem>
@@ -94,9 +95,9 @@ const SidebarMenuCollapsible = ({
         <CollapsibleTrigger asChild>
           <SidebarMenuButton tooltip={item.title}>
             {item.icon && <item.icon />}
-            <span>{item.title}</span>
-            {item.badge && <NavBadge>{item.badge}</NavBadge>}
-            <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
+            <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
+            {item.badge && <NavBadge className="group-data-[collapsible=icon]:hidden">{item.badge}</NavBadge>}
+            <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:hidden' />
           </SidebarMenuButton>
         </CollapsibleTrigger>
         <CollapsibleContent className='CollapsibleContent'>
@@ -109,8 +110,8 @@ const SidebarMenuCollapsible = ({
                 >
                   <Link to={subItem.url} onClick={() => setOpenMobile(false)}>
                     {subItem.icon && <subItem.icon />}
-                    <span>{subItem.title}</span>
-                    {subItem.badge && <NavBadge>{subItem.badge}</NavBadge>}
+                    <span className="group-data-[collapsible=icon]:hidden">{subItem.title}</span>
+                    {subItem.badge && <NavBadge className="group-data-[collapsible=icon]:hidden">{subItem.badge}</NavBadge>}
                   </Link>
                 </SidebarMenuSubButton>
               </SidebarMenuSubItem>
@@ -138,9 +139,9 @@ const SidebarMenuCollapsedDropdown = ({
             isActive={checkIsActive(href, item)}
           >
             {item.icon && <item.icon />}
-            <span>{item.title}</span>
-            {item.badge && <NavBadge>{item.badge}</NavBadge>}
-            <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
+            <span className="group-data-[collapsible=icon]:hidden">{item.title}</span>
+            {item.badge && <NavBadge className="group-data-[collapsible=icon]:hidden">{item.badge}</NavBadge>}
+            <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 group-data-[collapsible=icon]:hidden' />
           </SidebarMenuButton>
         </DropdownMenuTrigger>
         <DropdownMenuContent side='right' align='start' sideOffset={4}>

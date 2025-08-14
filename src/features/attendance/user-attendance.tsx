@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { 
   IconChevronLeft,
   IconChevronRight,
-  IconArrowRight
+  IconArrowRight as _IconArrowRight
 } from '@tabler/icons-react'
 import { useState } from 'react'
 
@@ -58,7 +58,7 @@ const attendanceLog = [
 const getStatusBadge = (status: string) => {
   switch (status) {
     case 'Present':
-      return <Badge className='bg-yellow-500 hover:bg-yellow-600'>Present</Badge>
+      return <Badge className='bg-green-500 hover:bg-green-600'>Present</Badge>
     case 'Late':
       return <Badge variant='destructive'>Late</Badge>
     case 'Weekend':
@@ -133,7 +133,7 @@ export default function UserAttendance() {
       <div className='space-y-6'>
         {/* Header */}
         <div>
-          <h1 className='text-3xl font-bold tracking-tight'>My Attendance</h1>
+          <h2 className='text-2xl font-bold tracking-tight'>My Attendance</h2>
           <p className='text-muted-foreground'>
             View your personal attendance record.
           </p>
@@ -180,11 +180,11 @@ export default function UserAttendance() {
                     <div
                       key={index}
                       className={`p-2 text-center text-sm border rounded min-h-[60px] flex items-center justify-center cursor-pointer hover:bg-muted/50 ${
-                        day.isCurrentMonth 
-                          ? 'bg-card text-foreground' 
-                          : 'bg-muted/25 text-muted-foreground'
-                      } ${
-                        isSelectedDate(day.date) ? 'bg-yellow-500 text-white' : ''
+                        isSelectedDate(day.date) 
+                          ? 'bg-black text-white' 
+                          : day.isCurrentMonth 
+                            ? 'bg-card text-foreground' 
+                            : 'bg-muted/25 text-muted-foreground'
                       }`}
                       onClick={() => setSelectedDate(day.date)}
                     >
@@ -265,4 +265,4 @@ export default function UserAttendance() {
       </div>
     </Main>
   )
-} 
+}
