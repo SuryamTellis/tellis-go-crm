@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Clock, Coffee, LogOut } from 'lucide-react'
 import { BarChart3 } from 'lucide-react'
+import { SidebarTrigger } from '@/components/ui/sidebar'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -103,6 +104,11 @@ export function PunchInTracker({ className = '' }: PunchInTrackerProps) {
       <div className={`flex items-center justify-between w-full ${className}`}>
         {/* Left side - Time tracking info */}
         <div className='flex items-center space-x-4 text-sm overflow-hidden'>
+          <SidebarTrigger 
+            variant='outline' 
+            className='w-8 h-8 p-0 flex-shrink-0 mr-2'
+            style={{ minWidth: 32, minHeight: 32 }}
+          />
           <div className='flex items-center space-x-2 flex-shrink-0'>
             <Clock className='h-4 w-4 text-muted-foreground' />
             <span className='whitespace-nowrap font-bold'>{formatTime(currentTime)}</span>
@@ -237,4 +243,4 @@ export function PunchInTracker({ className = '' }: PunchInTrackerProps) {
       </AlertDialog>
     </>
   )
-} 
+}

@@ -73,13 +73,13 @@ const recordings = [
 const getStatusBadge = (status: string) => {
   switch (status) {
     case 'processed':
-      return <Badge className='bg-yellow-500 hover:bg-yellow-600'>Processed</Badge>
+      return <Badge className='bg-green-500 hover:bg-green-600'>Processed</Badge>
     case 'processing':
-      return <Badge variant='secondary'>Processing</Badge>
+      return <Badge className='bg-yellow-500 hover:bg-yellow-600'>Processing</Badge>
     case 'failed':
-      return <Badge variant='destructive'>Failed</Badge>
+      return <Badge className='bg-red-500 hover:bg-red-600'>Failed</Badge>
     default:
-      return <Badge variant='secondary'>{status}</Badge>
+      return <Badge className='bg-gray-500 hover:bg-gray-600'>{status}</Badge>
   }
 }
 
@@ -98,7 +98,7 @@ export default function Recordings() {
         {/* Header */}
         <div className='flex items-center justify-between'>
           <div>
-            <h1 className='text-3xl font-bold tracking-tight'>All Recordings</h1>
+            <h2 className='text-2xl font-bold tracking-tight'>All Recordings</h2>
             <p className='text-muted-foreground'>
               Listen to and manage all user session recordings.
             </p>
@@ -232,4 +232,4 @@ export default function Recordings() {
       </div>
     </Main>
   )
-} 
+}

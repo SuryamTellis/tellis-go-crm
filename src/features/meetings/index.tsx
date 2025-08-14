@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { 
+import { Avatar, AvatarFallback,  } from '@/components/ui/avatar'
+import {  
   IconSearch, 
   IconLayoutList, 
   IconLayoutGrid, 
@@ -123,7 +123,7 @@ export default function Meetings() {
         {/* Header */}
         <div className='flex items-center justify-between'>
           <div>
-            <h1 className='text-3xl font-bold tracking-tight'>Meetings</h1>
+            <h2 className='text-2xl font-bold tracking-tight'>Meetings</h2>
             <p className='text-muted-foreground'>
               Manage all client and team meetings.
             </p>
@@ -333,4 +333,4 @@ export default function Meetings() {
       </div>
     </Main>
   )
-} 
+}
