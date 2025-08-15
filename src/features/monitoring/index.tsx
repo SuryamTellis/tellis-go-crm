@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { 
   IconSearch, 
@@ -12,7 +12,8 @@ import {
   IconFilter,
   IconUsers,
   IconCoffee,
-  IconUserOff
+  IconUserOff,
+  IconClock
 } from '@tabler/icons-react'
 import {
   DropdownMenu,
@@ -77,19 +78,19 @@ const users = [
 const getStatusBadge = (status: string) => {
   switch (status) {
     case 'active':
-      return <Badge className='bg-yellow-500 hover:bg-yellow-600'>Active</Badge>
+      return <Badge className='bg-green-500 hover:bg-green-600'>Active</Badge>
     case 'break':
-      return <Badge variant='secondary'>On Break</Badge>
+      return <Badge className='bg-orange-500 hover:bg-orange-600'>On Break</Badge>  // Updated color
     case 'offline':
       return <Badge variant='destructive'>Offline</Badge>
     case 'away':
-      return <Badge className='bg-orange-500 hover:bg-orange-600'>Away</Badge>
+      return <Badge variant='secondary'>Away</Badge>
     default:
       return <Badge variant='secondary'>{status}</Badge>
   }
 }
 
-const getStatusIcon = (status: string) => {
+const _getStatusIcon = (status: string) => {
   switch (status) {
     case 'active':
       return <IconUsers className='h-4 w-4' />
@@ -98,7 +99,7 @@ const getStatusIcon = (status: string) => {
     case 'offline':
       return <IconUserOff className='h-4 w-4' />
     case 'away':
-      return <IconUserOff className='h-4 w-4' />
+      return <IconClock className='h-4 w-4' />
     default:
       return <IconUsers className='h-4 w-4' />
   }
@@ -152,67 +153,86 @@ export default function Monitoring() {
       <div className='space-y-6'>
         {/* Header */}
         <div>
-          <h1 className='text-3xl font-bold tracking-tight'>User Monitoring</h1>
+          <h2 className='text-2xl font-bold tracking-tight'>User Monitoring</h2>
           <p className='text-muted-foreground'>
             A real-time view of currently active user sessions.
           </p>
         </div>
 
         {/* Summary Cards */}
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
+        <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
           <Card>
-            <CardContent className='p-4'>
-              <div className='flex items-center space-x-3'>
-                <div className='p-2 bg-muted rounded-lg'>
-                  <IconUsers className='h-4 w-4' />
-                </div>
-                <div>
-                  <p className='text-sm text-muted-foreground'>Total Users</p>
-                  <p className='text-2xl font-bold'>{totalUsers}</p>
-                </div>
-              </div>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+              <CardTitle className='text-sm font-medium'>
+                Total Users
+              </CardTitle>
+              <IconUsers className='h-4 w-4 text-muted-foreground' />
+            </CardHeader>
+            <CardContent>
+              <div className='text-2xl font-bold'>{totalUsers}</div>
+              <p className='text-xs text-muted-foreground'>
+                All registered users
+              </p>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className='p-4'>
-              <div className='flex items-center space-x-3'>
-                <div className='p-2 bg-muted rounded-lg'>
-                  <IconUsers className='h-4 w-4' />
-                </div>
-                <div>
-                  <p className='text-sm text-muted-foreground'>Active</p>
-                  <p className='text-2xl font-bold'>{activeUsers}</p>
-                </div>
-              </div>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+              <CardTitle className='text-sm font-medium'>
+                Active
+              </CardTitle>
+              <IconUsers className='h-4 w-4 text-muted-foreground' />
+            </CardHeader>
+            <CardContent>
+              <div className='text-2xl font-bold'>{activeUsers}</div>
+              <p className='text-xs text-muted-foreground'>
+                Currently active users
+              </p>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className='p-4'>
-              <div className='flex items-center space-x-3'>
-                <div className='p-2 bg-muted rounded-lg'>
-                  <IconCoffee className='h-4 w-4' />
-                </div>
-                <div>
-                  <p className='text-sm text-muted-foreground'>On Break</p>
-                  <p className='text-2xl font-bold'>{onBreakUsers}</p>
-                </div>
-              </div>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+              <CardTitle className='text-sm font-medium'>
+                On Break
+              </CardTitle>
+              <IconCoffee className='h-4 w-4 text-muted-foreground' />
+            </CardHeader>
+            <CardContent>
+              <div className='text-2xl font-bold'>{onBreakUsers}</div>
+              <p className='text-xs text-muted-foreground'>
+                Users currently on break
+              </p>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className='p-4'>
-              <div className='flex items-center space-x-3'>
-                <div className='p-2 bg-muted rounded-lg'>
-                  <IconUserOff className='h-4 w-4' />
-                </div>
-                <div>
-                  <p className='text-sm text-muted-foreground'>Offline</p>
-                  <p className='text-2xl font-bold'>{offlineUsers}</p>
-                </div>
-              </div>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+              <CardTitle className='text-sm font-medium'>
+                Offline
+              </CardTitle>
+              <IconUserOff className='h-4 w-4 text-muted-foreground' />
+            </CardHeader>
+            <CardContent>
+              <div className='text-2xl font-bold'>{offlineUsers}</div>
+              <p className='text-xs text-muted-foreground'>
+                Users currently offline
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+              <CardTitle className='text-sm font-medium'>
+                Away
+              </CardTitle>
+              <IconClock className='h-4 w-4 text-muted-foreground' />
+            </CardHeader>
+            <CardContent>
+              <div className='text-2xl font-bold'>{awayUsers}</div>
+              <p className='text-xs text-muted-foreground'>
+                Users currently away
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -389,4 +409,4 @@ export default function Monitoring() {
       </div>
     </Main>
   )
-} 
+}

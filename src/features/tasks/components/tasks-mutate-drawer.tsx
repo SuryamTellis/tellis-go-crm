@@ -76,7 +76,7 @@ export function TasksMutateDrawer({ open, onOpenChange, currentRow }: Props) {
         form.reset()
       }}
     >
-      <DialogContent className='max-w-4xl'>
+      <DialogContent className='max-w-5xl w-full p-8'>
         <DialogHeader className='text-left'>
           <DialogTitle>Create a new task</DialogTitle>
         </DialogHeader>
