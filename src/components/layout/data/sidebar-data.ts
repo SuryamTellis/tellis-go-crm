@@ -7,187 +7,143 @@ import {
   IconUsersGroup,
   IconChartLine,
   IconCalendarCheck,
+  IconSettings,
+  IconUserCog,
+  IconPalette,
+  IconNotification,
+  IconBrowserCheck,
+  IconHelp,
+  IconLogout,
+  IconBuilding,
+  IconClock,
+  IconFileText,
+  IconActivity,
+  IconEye,
 } from '@tabler/icons-react'
-// Future imports for when sections are uncommented:
-// import {
-//   IconBarrierBlock,    // For Errors section
-//   IconBrowserCheck,    // For Settings section
-//   IconBug,            // For Errors section
-//   IconError404,       // For Errors section
-//   IconHelp,           // For Help Center section
-//   IconLock,           // For Errors section
-//   IconLockAccess,     // For Auth section
-//   IconNotification,   // For Settings section
-//   IconPalette,        // For Settings section
-//   IconServerOff,      // For Errors section
-//   IconSettings,       // For Settings section
-//   IconTool,           // For Settings section
-//   IconUserCog,        // For Settings section
-//   IconUserOff,        // For Errors section
-// } from '@tabler/icons-react'
 import { type SidebarData } from '../types'
 
-export const sidebarData: SidebarData = {
-  user: {
-    name: 'satnaing',
-    email: 'satnaingdev@gmail.com',
-    avatar: '/avatars/shadcn.jpg',
-  },
-  navGroups: [
-    {
-      title: 'General',
-      items: [
-        {
-          title: 'Dashboard',
-          url: '/',
-          icon: IconLayoutDashboard,
-        },
-        {
-          title: 'Tasks',
-          url: '/tasks',
-          icon: IconChecklist,
-        },
-        // {
-        //   title: 'Apps',
-        //   url: '/apps',
-        //   icon: IconPackages,
-        // },
-        {
-          title: 'Chats',
-          url: '/chats',
-          badge: '3',
-          icon: IconMessages,
-        },
-        {
-          title: 'Users',
-          url: '/users',
-          icon: IconUsers,
-        },
-        {
-          title: 'Meetings',
-          url: '/meetings',
-          icon: IconUsersGroup,
-        },
-        {
-          title: 'Recordings',
-          url: '/recordings',
-          icon: IconMicrophone,
-        },
-        {
-          title: 'Monitoring',
-          url: '/monitoring',
-          icon: IconChartLine,
-        },
-        {
-          title: 'Attendance',
-          icon: IconCalendarCheck,
-          items: [
-            {
-              title: 'Admin',
-              url: '/admin-attendance',
-            },
-            {
-              title: 'User',
-              url: '/user-attendance',
-            },
-          ],
-        },
-      ],
+// This will be dynamically populated from the auth store
+export const getSidebarData = (): SidebarData => {
+  return {
+    user: {
+      name: 'Loading...',
+      email: 'loading@example.com',
+      avatar: '/avatars/shadcn.jpg',
     },
-    // {
-    //   title: 'Pages',
-    //   items: [
-    //     {
-    //       title: 'Auth',
-    //       icon: IconLockAccess,
-    //       items: [
-    //         {
-    //           title: 'Sign In (2 Col)',
-    //           url: '/sign-in-2',
-    //         },
-    //         {
-    //           title: 'Forgot Password',
-    //           url: '/forgot-password',
-    //         },
-    //         {
-    //           title: 'OTP',
-    //           url: '/otp',
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       title: 'Errors',
-    //       icon: IconBug,
-    //       items: [
-    //         {
-    //           title: 'Unauthorized',
-    //           url: '/401',
-    //           icon: IconLock,
-    //         },
-    //         {
-    //           title: 'Forbidden',
-    //           url: '/403',
-    //           icon: IconUserOff,
-    //         },
-    //         {
-    //           title: 'Not Found',
-    //           url: '/404',
-    //           icon: IconError404,
-    //         },
-    //         {
-    //           title: 'Internal Server Error',
-    //           url: '/500',
-    //           icon: IconServerOff,
-    //         },
-    //         {
-    //           title: 'Maintenance Error',
-    //           url: '/503',
-    //           icon: IconBarrierBlock,
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // },
-    // {
-    //   title: 'Other',
-    //   items: [
-    //     {
-    //       title: 'Settings',
-    //       icon: IconSettings,
-    //       items: [
-    //         {
-    //           title: 'Profile',
-    //           url: '/settings',
-    //           icon: IconUserCog,
-    //         },
-    //         {
-    //           title: 'Account',
-    //           url: '/settings/account',
-    //           icon: IconTool,
-    //         },
-    //         {
-    //           title: 'Appearance',
-    //           url: '/settings/appearance',
-    //           icon: IconPalette,
-    //         },
-    //         {
-    //           title: 'Notifications',
-    //           url: '/settings/notifications',
-    //           icon: IconNotification,
-    //         },
-    //         {
-    //           title: 'Display',
-    //           url: '/settings/display',
-    //           icon: IconBrowserCheck,
-    //         },
-    //       ],
-    //     },
-    //     {
-    //       title: 'Help Center',
-    //       url: '/coming-soon',
-    //       icon: IconHelp,
-    //     },
-    //   ],
-    // },
-  ],
+    navGroups: [
+      {
+        title: 'Main',
+        items: [
+          {
+            title: 'Dashboard',
+            url: '/',
+            icon: IconLayoutDashboard,
+          },
+          {
+            title: 'Employee Management',
+            url: '/admin-employee-management',
+            icon: IconUsers,
+          },
+          {
+            title: 'Tasks',
+            url: '/tasks',
+            icon: IconChecklist,
+          },
+          {
+            title: 'Attendance',
+            icon: IconCalendarCheck,
+            items: [
+              {
+                title: 'Admin View',
+                url: '/admin-attendance',
+              },
+              {
+                title: 'User View',
+                url: '/user-attendance',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        title: 'Monitoring',
+        items: [
+          {
+            title: 'Activity Monitoring',
+            url: '/monitoring',
+            icon: IconActivity,
+          },
+          {
+            title: 'Screenshots',
+            url: '/recordings',
+            icon: IconEye,
+          },
+          {
+            title: 'Time Tracking',
+            url: '/monitoring',
+            icon: IconClock,
+          },
+          {
+            title: 'Reports',
+            url: '/monitoring',
+            icon: IconFileText,
+          },
+        ],
+      },
+      {
+        title: 'Communication',
+        items: [
+          {
+            title: 'Chats',
+            url: '/chats',
+            badge: '3',
+            icon: IconMessages,
+          },
+          {
+            title: 'Meetings',
+            url: '/meetings',
+            icon: IconUsersGroup,
+          },
+          {
+            title: 'Notifications',
+            url: '/settings/notifications',
+            icon: IconNotification,
+          },
+        ],
+      },
+      {
+        title: 'Settings',
+        items: [
+          {
+            title: 'Profile',
+            url: '/settings',
+            icon: IconUserCog,
+          },
+          {
+            title: 'Account',
+            url: '/settings/account',
+            icon: IconSettings,
+          },
+          {
+            title: 'Appearance',
+            url: '/settings/appearance',
+            icon: IconPalette,
+          },
+          {
+            title: 'Display',
+            url: '/settings/display',
+            icon: IconBrowserCheck,
+          },
+          {
+            title: 'Help Center',
+            url: '/help-center',
+            icon: IconHelp,
+          },
+        ],
+      },
+    ],
+  }
 }
+
+// Default sidebar data for fallback
+export const sidebarData: SidebarData = getSidebarData()

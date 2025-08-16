@@ -8,11 +8,23 @@ import {
 } from '@/components/ui/sidebar'
 import { NavGroup } from '@/components/layout/nav-group'
 import { NavUser } from '@/components/layout/nav-user'
-import { sidebarData } from './data/sidebar-data'
+import { getSidebarData } from './data/sidebar-data'
+import { useAuth } from '@/stores/authStore'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar()
+  const { user } = useAuth()
   const isCollapsed = state === 'collapsed'
+
+  // Get dynamic sidebar data
+  const sidebarData = getSidebarData()
+  
+  // Update user data with auth store data if available
+  const userData = {
+    name: user?.empName || sidebarData.user.name,
+    email: user?.empEmail || sidebarData.user.email,
+    avatar: user?.empProfile || sidebarData.user.avatar,
+  }
 
   return (
     <Sidebar collapsible='icon' variant='floating' {...props}>
@@ -41,7 +53,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={sidebarData.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

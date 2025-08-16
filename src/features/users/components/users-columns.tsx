@@ -2,7 +2,6 @@ import { ColumnDef } from '@tanstack/react-table'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Checkbox } from '@/components/ui/checkbox'
-import LongText from '@/components/long-text'
 import { callTypes, userTypes } from '../data/data'
 import { User } from '../data/schema'
 import { DataTableColumnHeader } from './data-table-column-header'
@@ -45,7 +44,9 @@ export const columns: ColumnDef<User>[] = [
       <DataTableColumnHeader column={column} title='Username' />
     ),
     cell: ({ row }) => (
-      <LongText className='max-w-36'>{row.getValue('username')}</LongText>
+      <div className='max-w-36 truncate' title={row.getValue('username')}>
+        {row.getValue('username')}
+      </div>
     ),
     meta: {
       className: cn(
@@ -64,7 +65,11 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => {
       const { firstName, lastName } = row.original
       const fullName = `${firstName} ${lastName}`
-      return <LongText className='max-w-36'>{fullName}</LongText>
+      return (
+        <div className='max-w-36 truncate' title={fullName}>
+          {fullName}
+        </div>
+      )
     },
     meta: { className: 'w-36' },
   },

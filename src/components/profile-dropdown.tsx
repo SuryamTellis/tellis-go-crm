@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -11,8 +11,36 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { useAuthStore } from '@/stores/authStore'
+import { toast } from 'sonner'
+import { AuthService } from '@/services/authService'
 
 export function ProfileDropdown() {
+  const navigate = useNavigate()
+  const { auth } = useAuthStore()
+
+  const handleLogout = async () => {
+    try {
+      // Call logout API
+      await AuthService.logout()
+      
+      // Clear authentication data
+      auth.reset()
+      
+      // Show success message
+      toast.success('Logged out successfully')
+      
+      // Redirect to login page
+      navigate({ to: '/login' })
+    } catch (error) {
+      console.error('Logout error:', error)
+      // Even if API call fails, clear local auth data
+      auth.reset()
+      navigate({ to: '/login' })
+    }
+
+  }
+
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
@@ -42,7 +70,7 @@ export function ProfileDropdown() {
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogout}>
           Log out
           <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
         </DropdownMenuItem>
@@ -50,3 +78,4 @@ export function ProfileDropdown() {
     </DropdownMenu>
   )
 }
+

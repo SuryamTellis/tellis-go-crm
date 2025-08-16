@@ -8,7 +8,7 @@ import {
 } from '@tanstack/react-query'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { toast } from 'sonner'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore, useAuthInitializer } from '@/stores/authStore'
 import { handleServerError } from '@/utils/handle-server-error'
 import { FontProvider } from './context/font-context'
 import { ThemeProvider } from './context/theme-context'
@@ -53,7 +53,7 @@ const queryClient = new QueryClient({
           toast.error('Session expired!')
           useAuthStore.getState().auth.reset()
           const redirect = `${router.history.location.href}`
-          router.navigate({ to: '/sign-in', search: { redirect } })
+          router.navigate({ to: '/login', search: { redirect } })
         }
         if (error.response?.status === 500) {
           toast.error('Internal Server Error!')
@@ -82,6 +82,12 @@ declare module '@tanstack/react-router' {
   }
 }
 
+// Auth Provider Component
+function AuthProvider({ children }: { children: React.ReactNode }) {
+  useAuthInitializer()
+  return <>{children}</>
+}
+
 // Render the app
 const rootElement = document.getElementById('root')!
 if (!rootElement.innerHTML) {
@@ -91,7 +97,9 @@ if (!rootElement.innerHTML) {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme='light' storageKey='vite-ui-theme'>
           <FontProvider>
-            <RouterProvider router={router} />
+            <AuthProvider>
+              <RouterProvider router={router} />
+            </AuthProvider>
           </FontProvider>
         </ThemeProvider>
       </QueryClientProvider>

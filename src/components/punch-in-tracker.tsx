@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Clock, Coffee, LogOut } from 'lucide-react'
+import { Clock, Coffee, LogOut, Play, Pause, Square } from 'lucide-react'
 import { BarChart3 } from 'lucide-react'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import {
@@ -13,19 +13,36 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import { useAuth } from '@/stores/authStore'
+import { API_CONFIG, API_ENDPOINTS } from '@/config/api'
+import { AuthService } from '@/services/authService'
+import { toast } from 'sonner'
 
 interface PunchInTrackerProps {
   className?: string
 }
 
+interface TimeSheetStatus {
+  isPunchedIn: boolean
+  isOnBreak: boolean
+  clockInTime: string
+  breakStartTime: string
+  totalWorkHours: number
+  totalBreakTime: number
+}
+
 export function PunchInTracker({ className = '' }: PunchInTrackerProps) {
+  const { accessToken, user } = useAuth()
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [isPunchedIn, setIsPunchedIn] = useState(false)
-  const [startTime, setStartTime] = useState<Date | null>(null)
-  const [isOnBreak, setIsOnBreak] = useState(false)
-  const [breakStartTime, setBreakStartTime] = useState<Date | null>(null)
-  const [todayHours, setTodayHours] = useState(0)
-  const [breakHours, setBreakHours] = useState(0)
+  const [timeSheetStatus, setTimeSheetStatus] = useState<TimeSheetStatus>({
+    isPunchedIn: false,
+    isOnBreak: false,
+    clockInTime: '',
+    breakStartTime: '',
+    totalWorkHours: 0,
+    totalBreakTime: 0
+  })
+  const [loading, setLoading] = useState(false)
   
   // Confirmation dialog states
   const [showPunchInDialog, setShowPunchInDialog] = useState(false)
@@ -42,46 +59,119 @@ export function PunchInTracker({ className = '' }: PunchInTrackerProps) {
     return () => clearInterval(timer)
   }, [])
 
-  // Calculate today's hours and break time
+  // Fetch current timesheet status on component mount
   useEffect(() => {
-    if (startTime) {
-      const diff = currentTime.getTime() - startTime.getTime()
-      const hours = Math.floor(diff / (1000 * 60 * 60))
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-      setTodayHours(hours + minutes / 60)
+    if (accessToken) {
+      fetchCurrentStatus()
     }
+  }, [accessToken])
 
-    if (breakStartTime && isOnBreak) {
-      const diff = currentTime.getTime() - breakStartTime.getTime()
-      const hours = Math.floor(diff / (1000 * 60 * 60))
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
-      setBreakHours(hours + minutes / 60)
-    }
-  }, [currentTime, startTime, breakStartTime, isOnBreak])
+  const fetchCurrentStatus = async () => {
+    try {
+      const headers = AuthService.getAuthHeaders(accessToken)
+      const response = await fetch(`${API_CONFIG.baseURL}${API_ENDPOINTS.timesheet.currentStatus}`, {
+        headers,
+      })
 
-  const handlePunchIn = () => {
-    if (!isPunchedIn) {
-      setIsPunchedIn(true)
-      setStartTime(new Date())
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          setTimeSheetStatus(data.data)
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching timesheet status:', error)
     }
   }
 
-  const handlePunchOut = () => {
-    setIsPunchedIn(false)
-    setStartTime(null)
-    setIsOnBreak(false)
-    setBreakStartTime(null)
-    setBreakHours(0)
+  const handlePunchIn = async () => {
+    setLoading(true)
+    try {
+      const headers = AuthService.getAuthHeaders(accessToken)
+      const response = await fetch(`${API_CONFIG.baseURL}${API_ENDPOINTS.timesheet.clockIn}`, {
+        method: 'POST',
+        headers,
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          toast.success('Punched in successfully!')
+          setTimeSheetStatus(prev => ({ ...prev, isPunchedIn: true, clockInTime: new Date().toISOString() }))
+        }
+      } else {
+        toast.error('Failed to punch in')
+      }
+    } catch (error) {
+      toast.error('Error punching in')
+    } finally {
+      setLoading(false)
+      setShowPunchInDialog(false)
+    }
   }
 
-  const handleTakeBreak = () => {
-    if (isPunchedIn && !isOnBreak) {
-      setIsOnBreak(true)
-      setBreakStartTime(new Date())
-    } else if (isOnBreak) {
-      setIsOnBreak(false)
-      setBreakStartTime(null)
-      setBreakHours(0)
+  const handlePunchOut = async () => {
+    setLoading(true)
+    try {
+      const headers = AuthService.getAuthHeaders(accessToken)
+      const response = await fetch(`${API_CONFIG.baseURL}${API_ENDPOINTS.timesheet.clockOut}`, {
+        method: 'POST',
+        headers,
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          toast.success('Punched out successfully!')
+          setTimeSheetStatus(prev => ({ 
+            ...prev, 
+            isPunchedIn: false, 
+            isOnBreak: false,
+            clockInTime: '',
+            breakStartTime: ''
+          }))
+        }
+      } else {
+        toast.error('Failed to punch out')
+      }
+    } catch (error) {
+      toast.error('Error punching out')
+    } finally {
+      setLoading(false)
+      setShowPunchOutDialog(false)
+    }
+  }
+
+  const handleTakeBreak = async () => {
+    setLoading(true)
+    try {
+      const headers = AuthService.getAuthHeaders(accessToken)
+      const endpoint = timeSheetStatus.isOnBreak ? API_ENDPOINTS.timesheet.breakEnd : API_ENDPOINTS.timesheet.breakStart
+      const response = await fetch(`${API_CONFIG.baseURL}${endpoint}`, {
+        method: 'POST',
+        headers,
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          const action = timeSheetStatus.isOnBreak ? 'Break ended' : 'Break started'
+          toast.success(`${action} successfully!`)
+          setTimeSheetStatus(prev => ({ 
+            ...prev, 
+            isOnBreak: !prev.isOnBreak,
+            breakStartTime: prev.isOnBreak ? '' : new Date().toISOString()
+          }))
+        }
+      } else {
+        toast.error(`Failed to ${timeSheetStatus.isOnBreak ? 'end' : 'start'} break`)
+      }
+    } catch (error) {
+      toast.error(`Error ${timeSheetStatus.isOnBreak ? 'ending' : 'starting'} break`)
+    } finally {
+      setLoading(false)
+      setShowBreakDialog(false)
+      setShowResumeDialog(false)
     }
   }
 
@@ -114,130 +204,139 @@ export function PunchInTracker({ className = '' }: PunchInTrackerProps) {
             <span className='whitespace-nowrap font-bold'>{formatTime(currentTime)}</span>
           </div>
           
-          {startTime && (
+          {timeSheetStatus.clockInTime && (
             <div className='flex items-center space-x-2 flex-shrink-0'>
               <Clock className='h-4 w-4 text-muted-foreground' />
               <span className='whitespace-nowrap'>
-                Started at <span className='font-bold'>{formatTime(startTime)}</span>
+                Started at <span className='font-bold'>{formatTime(new Date(timeSheetStatus.clockInTime))}</span>
               </span>
             </div>
           )}
           
           <div className='flex items-center space-x-2 flex-shrink-0'>
             <BarChart3 className='h-4 w-4 text-muted-foreground' />
-            <span className='whitespace-nowrap'>{formatHours(todayHours)} Today</span>
+            <span className='whitespace-nowrap'>{formatHours(timeSheetStatus.totalWorkHours)} Today</span>
           </div>
           
-          {isOnBreak && (
+          {timeSheetStatus.isOnBreak && (
             <div className='flex items-center space-x-2 flex-shrink-0'>
               <Clock className='h-4 w-4 text-muted-foreground' />
-              <span className='whitespace-nowrap'>{formatHours(breakHours)} Break</span>
+              <span className='whitespace-nowrap'>{formatHours(timeSheetStatus.totalBreakTime)} Break</span>
             </div>
           )}
         </div>
 
         {/* Right side - Action buttons */}
         <div className='flex items-center space-x-2 flex-shrink-0 ml-4'>
-          {isPunchedIn && (
+          {timeSheetStatus.isPunchedIn && (
             <Button
-              onClick={() => isOnBreak ? setShowResumeDialog(true) : setShowBreakDialog(true)}
+              onClick={() => timeSheetStatus.isOnBreak ? setShowResumeDialog(true) : setShowBreakDialog(true)}
               variant='outline'
               size='sm'
               className={`${
-                isOnBreak 
+                timeSheetStatus.isOnBreak 
                   ? 'bg-orange-500 text-white hover:bg-orange-600' 
                   : 'bg-orange-500 text-white hover:bg-orange-600'
               }`}
             >
               <Coffee className='h-4 w-4 mr-1' />
-              <span className='hidden sm:inline'>{isOnBreak ? 'Resume' : 'Take Break'}</span>
+              <span className='hidden sm:inline'>{timeSheetStatus.isOnBreak ? 'Resume' : 'Take Break'}</span>
             </Button>
           )}
           
-          {isPunchedIn && !isOnBreak && (
+          {timeSheetStatus.isPunchedIn && !timeSheetStatus.isOnBreak && (
             <Button
               onClick={() => setShowPunchOutDialog(true)}
-              variant='destructive'
+              variant='outline'
               size='sm'
+              disabled={loading}
+              className='bg-red-500 text-white hover:bg-red-600 border-red-500'
             >
-              <LogOut className='h-4 w-4 mr-1' />
+              <Square className='h-4 w-4 mr-1' />
               <span className='hidden sm:inline'>Punch Out</span>
             </Button>
           )}
           
-          {!isPunchedIn && (
+          {!timeSheetStatus.isPunchedIn && (
             <Button
               onClick={() => setShowPunchInDialog(true)}
-              variant='default'
+              variant='outline'
               size='sm'
+              disabled={loading}
+              className='bg-green-500 text-white hover:bg-green-600 border-green-500'
             >
-              <LogOut className='h-4 w-4 mr-1' />
+              <Play className='h-4 w-4 mr-1' />
               <span className='hidden sm:inline'>Punch In</span>
             </Button>
           )}
         </div>
       </div>
 
-      {/* Punch In Confirmation Dialog */}
+      {/* Confirmation Dialogs */}
       <AlertDialog open={showPunchInDialog} onOpenChange={setShowPunchInDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Punch In</AlertDialogTitle>
+            <AlertDialogTitle>Punch In</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to punch in? This will start tracking your work time.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handlePunchIn}>OK</AlertDialogAction>
+            <AlertDialogAction onClick={handlePunchIn} disabled={loading}>
+              {loading ? 'Punching In...' : 'Punch In'}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Punch Out Confirmation Dialog */}
       <AlertDialog open={showPunchOutDialog} onOpenChange={setShowPunchOutDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Punch Out</AlertDialogTitle>
+            <AlertDialogTitle>Punch Out</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to punch out? This will end your work session.
+              Are you sure you want to punch out? This will end your work session for today.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handlePunchOut}>OK</AlertDialogAction>
+            <AlertDialogAction onClick={handlePunchOut} disabled={loading}>
+              {loading ? 'Punching Out...' : 'Punch Out'}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Take Break Confirmation Dialog */}
       <AlertDialog open={showBreakDialog} onOpenChange={setShowBreakDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Break</AlertDialogTitle>
+            <AlertDialogTitle>Take Break</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to start your break? This will pause your work time tracking.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleTakeBreak}>OK</AlertDialogAction>
+            <AlertDialogAction onClick={handleTakeBreak} disabled={loading}>
+              {loading ? 'Starting Break...' : 'Start Break'}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Resume Confirmation Dialog */}
       <AlertDialog open={showResumeDialog} onOpenChange={setShowResumeDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Confirm Resume</AlertDialogTitle>
+            <AlertDialogTitle>Resume Work</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to resume work? This will end your break and continue time tracking.
+              Are you sure you want to resume work? This will end your break and continue tracking work time.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleTakeBreak}>OK</AlertDialogAction>
+            <AlertDialogAction onClick={handleTakeBreak} disabled={loading}>
+              {loading ? 'Resuming...' : 'Resume Work'}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

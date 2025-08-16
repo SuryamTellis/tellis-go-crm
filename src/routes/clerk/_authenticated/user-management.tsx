@@ -1,184 +1,77 @@
-import { useEffect, useState } from 'react'
-import {
-  createFileRoute,
-  Link,
-  useNavigate,
-  useRouter,
-} from '@tanstack/react-router'
-import { IconArrowUpRight, IconLoader2 } from '@tabler/icons-react'
-import { SignedIn, useAuth, UserButton } from '@clerk/clerk-react'
-import { ClerkLogo } from '@/assets/clerk-logo'
-import { Button } from '@/components/ui/button'
-import { Header } from '@/components/layout/header'
+import { createFileRoute } from '@tanstack/react-router'
 import { Main } from '@/components/layout/main'
-import { LearnMore } from '@/components/learn-more'
-import { Search } from '@/components/search'
-import { ThemeSwitch } from '@/components/theme-switch'
-import { columns } from '@/features/users/components/users-columns'
-import { UsersDialogs } from '@/features/users/components/users-dialogs'
-import { UsersPrimaryButtons } from '@/features/users/components/users-primary-buttons'
-import { UsersTable } from '@/features/users/components/users-table'
-import UsersProvider from '@/features/users/context/users-context'
-import { userListSchema } from '@/features/users/data/schema'
-import { users } from '@/features/users/data/users'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Users, Plus, Search, Filter } from 'lucide-react'
 
 export const Route = createFileRoute('/clerk/_authenticated/user-management')({
   component: UserManagement,
 })
 
 function UserManagement() {
-  const [opened, setOpened] = useState(true)
-  const { isLoaded, isSignedIn } = useAuth()
-
-  if (!isLoaded) {
-    return (
-      <div className='flex h-svh items-center justify-center'>
-        <IconLoader2 className='size-8 animate-spin' />
-      </div>
-    )
-  }
-
-  if (!isSignedIn) {
-    return <Unauthorized />
-  }
-
-  // Parse user list
-  const userList = userListSchema.parse(users)
   return (
-    <>
-      <SignedIn>
-        <UsersProvider>
-          <Header fixed>
-            <Search />
-            <div className='ml-auto flex items-center space-x-4'>
-              <ThemeSwitch />
-              <UserButton />
-            </div>
-          </Header>
+    <Main>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
+            <p className="text-muted-foreground">
+              Manage users and their permissions in the system.
+            </p>
+          </div>
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            Add User
+          </Button>
+        </div>
 
-          <Main>
-            <div className='mb-2 flex flex-wrap items-center justify-between space-y-2'>
-              <div>
-                <h2 className='text-2xl font-bold tracking-tight'>User List</h2>
-                <div className='flex gap-1'>
-                  <p className='text-muted-foreground'>
-                    Manage your users and their roles here.
-                  </p>
-                  <LearnMore
-                    open={opened}
-                    onOpenChange={setOpened}
-                    contentProps={{ side: 'right' }}
-                  >
-                    <p>
-                      This is the same as{' '}
-                      <Link
-                        to='/users'
-                        className='text-blue-500 underline decoration-dashed underline-offset-2'
-                      >
-                        '/users'
-                      </Link>
-                    </p>
-
-                    <p className='mt-4'>
-                      You can sign out or manage/delete your account via the
-                      User Profile menu in the top-right corner of the page.
-                      <IconArrowUpRight className='inline-block size-4' />
-                    </p>
-                  </LearnMore>
+        {/* Search and Filters */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Search & Filters</CardTitle>
+            <CardDescription>
+              Find specific users or filter by criteria.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-4">
+              <div className="flex-1">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                  <input
+                    placeholder="Search users..."
+                    className="w-full pl-10 pr-4 py-2 border rounded-md"
+                  />
                 </div>
               </div>
-              <UsersPrimaryButtons />
-            </div>
-            <div className='-mx-4 flex-1 overflow-auto px-4 py-1 lg:flex-row lg:space-y-0 lg:space-x-12'>
-              <UsersTable data={userList} columns={columns} />
-            </div>
-          </Main>
-
-          <UsersDialogs />
-        </UsersProvider>
-      </SignedIn>
-    </>
-  )
-}
-
-const COUNTDOWN = 5 // Countdown second
-
-function Unauthorized() {
-  const navigate = useNavigate()
-  const { history } = useRouter()
-
-  const [opened, setOpened] = useState(true)
-  const [cancelled, setCancelled] = useState(false)
-  const [countdown, setCountdown] = useState(COUNTDOWN)
-
-  // Set and run the countdown conditionally
-  useEffect(() => {
-    if (cancelled || opened) return
-    const interval = setInterval(() => {
-      setCountdown((prev) => (prev > 0 ? prev - 1 : 0))
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [cancelled, opened])
-
-  // Navigate to sign-in page when countdown hits 0
-  useEffect(() => {
-    if (countdown > 0) return
-    navigate({ to: '/clerk/sign-in' })
-  }, [countdown, navigate])
-
-  return (
-    <div className='h-svh'>
-      <div className='m-auto flex h-full w-full flex-col items-center justify-center gap-2'>
-        <h1 className='text-[7rem] leading-tight font-bold'>401</h1>
-        <span className='font-medium'>Unauthorized Access</span>
-        <p className='text-muted-foreground text-center'>
-          You must be authenticated via Clerk{' '}
-          <sup>
-            <LearnMore open={opened} onOpenChange={setOpened}>
-              <p>
-                This is the same as{' '}
-                <Link
-                  to='/users'
-                  className='text-blue-500 underline decoration-dashed underline-offset-2'
-                >
-                  '/users'
-                </Link>
-                .{' '}
-              </p>
-              <p>You must first sign in using Clerk to access this route. </p>
-
-              <p className='mt-4'>
-                After signing in, you'll be able to sign out or delete your
-                account via the User Profile dropdown on this page.
-              </p>
-            </LearnMore>
-          </sup>
-          <br />
-          to access this resource.
-        </p>
-        <div className='mt-6 flex gap-4'>
-          <Button variant='outline' onClick={() => history.go(-1)}>
-            Go Back
-          </Button>
-          <Button onClick={() => navigate({ to: '/clerk/sign-in' })}>
-            <ClerkLogo className='invert' /> Sign in
-          </Button>
-        </div>
-        <div className='mt-4 h-8 text-center'>
-          {!cancelled && !opened && (
-            <>
-              <p>
-                {countdown > 0
-                  ? `Redirecting to Sign In page in ${countdown}s`
-                  : `Redirecting...`}
-              </p>
-              <Button variant='link' onClick={() => setCancelled(true)}>
-                Cancel Redirect
+              <Button variant="outline">
+                <Filter className="mr-2 h-4 w-4" />
+                Filters
               </Button>
-            </>
-          )}
-        </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Users List */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Users</CardTitle>
+            <CardDescription>
+              List of all users in the system.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-center py-8">
+              <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No Users Found</h3>
+              <p className="text-muted-foreground">
+                Start by adding your first user to the system.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
-    </div>
+    </Main>
   )
 }
